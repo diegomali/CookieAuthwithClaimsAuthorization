@@ -1,0 +1,138 @@
+﻿@model IEnumerable<SaleManagerWeb.Models.CustomerModel>
+@using Microsoft.AspNetCore.Authentication
+@using SaleManagerWeb.Models
+
+@{
+    ViewData["Title"] = "Customer List";
+}
+<style>
+    .form-filter {
+        display: flex;
+        flex: 1;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    .form-filter .form-group {
+        display: flex
+    }
+</style>
+@{ 
+    var isAdm = User.Claims.FirstOrDefault(x => x.Type == "role").Value == "Administrator";
+}
+
+
+<h2>Customer List</h2>
+<form asp-controller="Customer" asp-action="Index" class="form-filter" asp-route-returnurl="Customer" method="post" style="display:flex; flex: 1">
+    <div class="form-group">
+        <label class="col-md-4 control-label">Name</label>
+        <div class="col-md-10">
+            <input type="text" name="name" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-4 control-label">Gender</label>
+        <div class="col-md-10">
+            @Html.DropDownList("Gender", new SelectList(ViewBag.Gender, "Id", "Name"), "Select a Gender")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-4 control-label">City</label>
+        <div class="col-md-10">
+            @Html.DropDownList("City", new SelectList(ViewBag.Cities, "Id", "Name"), "Select a city")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-4 control-label">Region</label>
+        <div class="col-md-10">
+            @Html.DropDownList("Region", new SelectList(ViewBag.Region, "Id", "Name"), "Select a Region")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-4 control-label">Last Purchase</label>
+        <div class="col-md-10">
+            <input type="date" name="initialDate" /> until <input type="date" name="finalDate" />
+        </div>
+    </div>
+    @if (isAdm)
+    {
+        <div class="form-group">
+            <label class="col-md-2 control-label">Seller</label>
+            <div class="col-md-10">
+                @Html.DropDownList("Seller", new SelectList(ViewBag.Sellers, "Id", "Login"), "Select a Seller")
+            </div>
+        </div>
+    }
+    <input type="submit" value="Search" />
+    <input type="button" value="Clear" onclick="void(location.href = '/Customer')" />
+</form>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Classification.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gender.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Region.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastPurchase)
+            </th>
+            @if (isAdm)
+            {
+                <th>Seller</th>
+            }
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classification.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Region.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastPurchase)
+                </td>
+                @if (isAdm)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.User)
+                    </td>
+                }
+                
+            </tr>
+        }
+    </tbody>
+</table>
